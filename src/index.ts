@@ -41,6 +41,17 @@ export interface RequestInfo {
   headers: Record<string, any>
 }
 
+export interface QCloudResponse {
+  Response: {
+    RequestId: string
+    Error?: {
+      Code: string
+      Message: string
+    }
+    [key: string]: any
+  }
+}
+
 export const DEFAULT_CLIENT = 'TENCENT_SDK_QCloud'
 export const DEFAULT_OPTIONS: Partial<QCloudOptions> = {
   path: '/',
@@ -78,7 +89,7 @@ export class QCloud implements QCloudInstance {
       onRequest({ url, payload, headers })
     }
 
-    const { data } = await axios.post(url, payload, { headers })
+    const { data } = await axios.post<QCloudResponse>(url, payload, { headers })
     return data
   }
 }

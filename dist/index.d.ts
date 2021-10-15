@@ -32,10 +32,20 @@ export interface RequestInfo {
     payload: any;
     headers: Record<string, any>;
 }
+export interface QCloudResponse {
+    Response: {
+        RequestId: string;
+        Error?: {
+            Code: string;
+            Message: string;
+        };
+        [key: string]: any;
+    };
+}
 export declare const DEFAULT_CLIENT = "TENCENT_SDK_QCloud";
 export declare const DEFAULT_OPTIONS: Partial<QCloudOptions>;
 export declare class QCloud implements QCloudInstance {
     private options;
     constructor(options: QCloudOptions);
-    request(params: RequestParams, opts?: RequestOptions): Promise<any>;
+    request(params: RequestParams, opts?: RequestOptions): Promise<QCloudResponse>;
 }

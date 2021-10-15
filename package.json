@@ -1,15 +1,15 @@
 {
   "name": "@improvising/qcloud",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Tencent Cloud API SDK",
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc"
   },
-  "author": "Improvising Rhythm, Ltd.",
+  "author": "Improvising Rhythm Ltd.",
   "license": "MIT",
   "dependencies": {
-    "axios": "0.21.3"
+    "axios": "^0.23.0"
   },
   "devDependencies": {
     "@types/node": "^16.10.3",
