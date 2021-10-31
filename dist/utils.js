@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tencentSign = exports.sign = exports.getUrl = exports.getDate = exports.getUnixTime = exports.getHost = void 0;
 const crypto_1 = require("crypto");
-const getHost = ({ host, ServiceType, Region, baseHost }, isV1 = false) => {
-    host !== null && host !== void 0 ? host : (host = `${ServiceType}${isV1 ? '' : `.${Region}`}.${baseHost}`);
+const getHost = ({ host, ServiceType, Region, baseHost, }) => {
+    host !== null && host !== void 0 ? host : (host = `${ServiceType}${Region ? `.${Region}` : ''}.${baseHost}`);
     return host;
 };
 exports.getHost = getHost;
@@ -19,8 +19,8 @@ const getDate = (date) => {
     return `${year}-${month > 9 ? month : `0${month}`}-${day > 9 ? day : `0${day}`}`;
 };
 exports.getDate = getDate;
-const getUrl = (opts, isV1 = false) => {
-    const host = (0, exports.getHost)(opts, isV1);
+const getUrl = (opts) => {
+    const host = (0, exports.getHost)(opts);
     const path = opts.path || '/';
     return `https://${host}${path}`;
 };

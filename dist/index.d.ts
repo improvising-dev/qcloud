@@ -6,7 +6,7 @@ export interface QCloudOptions {
     path?: string;
     ServiceType: string;
     Version?: string;
-    Region: string;
+    Region?: string;
     SecretId: string;
     SecretKey: string;
     Token?: string;

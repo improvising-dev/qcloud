@@ -1,6 +1,6 @@
 {
   "name": "@improvising/qcloud",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Tencent Cloud API SDK",
   "main": "dist/index.js",
   "scripts": {

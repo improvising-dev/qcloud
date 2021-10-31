@@ -11,7 +11,7 @@ export interface Payload {
 
 export interface HostParams {
   ServiceType: string
-  Region: string
+  Region?: string
   host: string | undefined
   baseHost: string | undefined
   path?: string
@@ -25,11 +25,13 @@ export interface TencentSignResult {
   Timestamp: string
 }
 
-export const getHost = (
-  { host, ServiceType, Region, baseHost }: HostParams,
-  isV1 = false,
-) => {
-  host ??= `${ServiceType}${isV1 ? '' : `.${Region}`}.${baseHost}`
+export const getHost = ({
+  host,
+  ServiceType,
+  Region,
+  baseHost,
+}: HostParams) => {
+  host ??= `${ServiceType}${Region ? `.${Region}` : ''}.${baseHost}`
   return host
 }
 
@@ -48,8 +50,8 @@ export const getDate = (date: Date) => {
   }`
 }
 
-export const getUrl = (opts: HostParams, isV1 = false) => {
-  const host = getHost(opts, isV1)
+export const getUrl = (opts: HostParams) => {
+  const host = getHost(opts)
   const path = opts.path || '/'
 
   return `https://${host}${path}`

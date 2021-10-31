@@ -10,7 +10,7 @@ export interface QCloudOptions {
   path?: string
   ServiceType: string
   Version?: string
-  Region: string
+  Region?: string
   SecretId: string
   SecretKey: string
   Token?: string
@@ -79,7 +79,7 @@ export class QCloud implements QCloudInstance {
       Host,
       'X-TC-Action': Action,
       'X-TC-Timestamp': Timestamp,
-      'X-TC-Region': Region,
+      ...(Region && { 'X-TC-Region': Region }),
       ...(Version && { 'X-TC-Version': Version }),
       ...(Token && { 'X-TC-Token': Token }),
       ...(RequestClient && { 'X-TC-RequestClient': RequestClient }),

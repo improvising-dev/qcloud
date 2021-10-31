@@ -33,8 +33,8 @@ class QCloud {
         const { Action, Version = options.Version } = params, restParams = __rest(params, ["Action", "Version"]);
         const { onRequest, Region, RequestClient, Token } = options;
         const { url, payload, Authorization, Timestamp, Host } = (0, utils_1.tencentSign)(restParams, options);
-        const headers = Object.assign(Object.assign(Object.assign({ Authorization,
-            Host, 'X-TC-Action': Action, 'X-TC-Timestamp': Timestamp, 'X-TC-Region': Region }, (Version && { 'X-TC-Version': Version })), (Token && { 'X-TC-Token': Token })), (RequestClient && { 'X-TC-RequestClient': RequestClient }));
+        const headers = Object.assign(Object.assign(Object.assign(Object.assign({ Authorization,
+            Host, 'X-TC-Action': Action, 'X-TC-Timestamp': Timestamp }, (Region && { 'X-TC-Region': Region })), (Version && { 'X-TC-Version': Version })), (Token && { 'X-TC-Token': Token })), (RequestClient && { 'X-TC-RequestClient': RequestClient }));
         if (onRequest) {
             onRequest({ url, payload, headers });
         }
