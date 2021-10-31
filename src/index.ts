@@ -4,40 +4,36 @@ import axios from 'axios'
 export { tencentSign } from './utils'
 
 export interface QCloudOptions {
-  onRequest?: (info: RequestInfo) => void
-  host?: string
+  onRequest?: (info: QCloudRequestInfo) => void
   baseHost?: string
   path?: string
-  ServiceType: string
-  Version?: string
-  Region?: string
-  SecretId: string
-  SecretKey: string
-  Token?: string
-  RequestClient?: string
+  serviceType: string
+  serviceRegion?: string
+  secretId: string
+  secretKey: string
+  params?: Partial<QCloudRequestParams>
 }
 
-export interface RequestParams {
-  Action: string
-  Version?: string
-  [propName: string]: any
-}
+export type QCloudRequestPayload = Record<string, any>
 
-export interface RequestOptions {
-  onRequest?: (info: RequestInfo) => void
-  host?: string
-  baseHost?: string
-  path?: string
-  RequestClient?: string
+export interface QCloudRequestParams {
+  action?: string
+  region?: string
+  version?: string
+  token?: string
+  language?: 'zh-CN' | 'en-US'
 }
 
 export interface QCloudInstance {
-  request: (params: RequestParams, opts?: RequestOptions) => Promise<any>
+  request: (
+    payload: QCloudRequestPayload,
+    params?: QCloudRequestParams,
+  ) => Promise<any>
 }
 
-export interface RequestInfo {
+export interface QCloudRequestInfo {
   url: string
-  payload: any
+  payload: QCloudRequestPayload
   headers: Record<string, any>
 }
 
@@ -52,7 +48,6 @@ export interface QCloudResponse {
   }
 }
 
-export const DEFAULT_CLIENT = 'TENCENT_SDK_QCloud'
 export const DEFAULT_OPTIONS: Partial<QCloudOptions> = {
   path: '/',
   baseHost: 'tencentcloudapi.com',
@@ -65,29 +60,40 @@ export class QCloud implements QCloudInstance {
     this.options = { ...DEFAULT_OPTIONS, ...options }
   }
 
-  async request(params: RequestParams, opts?: RequestOptions) {
-    const options = { ...this.options, ...opts }
-    const { Action, Version = options.Version, ...restParams } = params
-    const { onRequest, Region, RequestClient, Token } = options
-    const { url, payload, Authorization, Timestamp, Host } = tencentSign(
-      restParams,
-      options,
+  async request(
+    payload: QCloudRequestPayload,
+    params: QCloudRequestParams = {},
+  ) {
+    const { url, host, authorization, timestamp } = tencentSign(
+      payload,
+      this.options,
     )
 
-    const headers = {
-      Authorization,
-      Host,
-      'X-TC-Action': Action,
-      'X-TC-Timestamp': Timestamp,
-      ...(Region && { 'X-TC-Region': Region }),
-      ...(Version && { 'X-TC-Version': Version }),
-      ...(Token && { 'X-TC-Token': Token }),
-      ...(RequestClient && { 'X-TC-RequestClient': RequestClient }),
+    const { action, version, region, token, language } = {
+      ...this.options.params,
+      ...params,
     }
 
-    if (onRequest) {
-      onRequest({ url, payload, headers })
+    if (!action) {
+      throw new Error('[action] is required')
     }
+
+    if (!version) {
+      throw new Error('[version] is required')
+    }
+
+    const headers = {
+      authorization,
+      host,
+      'X-TC-Timestamp': timestamp,
+      'X-TC-Action': action,
+      'X-TC-Version': version,
+      ...(region && { 'X-TC-Region': region }),
+      ...(token && { 'X-TC-Token': token }),
+      ...(language && { 'X-TC-Language': language }),
+    }
+
+    this.options.onRequest?.({ url, payload, headers })
 
     const { data } = await axios.post<QCloudResponse>(url, payload, { headers })
     return data

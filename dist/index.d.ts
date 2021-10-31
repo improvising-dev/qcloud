@@ -1,35 +1,28 @@
 export { tencentSign } from './utils';
 export interface QCloudOptions {
-    onRequest?: (info: RequestInfo) => void;
-    host?: string;
+    onRequest?: (info: QCloudRequestInfo) => void;
     baseHost?: string;
     path?: string;
-    ServiceType: string;
-    Version?: string;
-    Region?: string;
-    SecretId: string;
-    SecretKey: string;
-    Token?: string;
-    RequestClient?: string;
+    serviceType: string;
+    serviceRegion?: string;
+    secretId: string;
+    secretKey: string;
+    params?: Partial<QCloudRequestParams>;
 }
-export interface RequestParams {
-    Action: string;
-    Version?: string;
-    [propName: string]: any;
-}
-export interface RequestOptions {
-    onRequest?: (info: RequestInfo) => void;
-    host?: string;
-    baseHost?: string;
-    path?: string;
-    RequestClient?: string;
+export declare type QCloudRequestPayload = Record<string, any>;
+export interface QCloudRequestParams {
+    action?: string;
+    region?: string;
+    version?: string;
+    token?: string;
+    language?: 'zh-CN' | 'en-US';
 }
 export interface QCloudInstance {
-    request: (params: RequestParams, opts?: RequestOptions) => Promise<any>;
+    request: (payload: QCloudRequestPayload, params?: QCloudRequestParams) => Promise<any>;
 }
-export interface RequestInfo {
+export interface QCloudRequestInfo {
     url: string;
-    payload: any;
+    payload: QCloudRequestPayload;
     headers: Record<string, any>;
 }
 export interface QCloudResponse {
@@ -42,10 +35,9 @@ export interface QCloudResponse {
         [key: string]: any;
     };
 }
-export declare const DEFAULT_CLIENT = "TENCENT_SDK_QCloud";
 export declare const DEFAULT_OPTIONS: Partial<QCloudOptions>;
 export declare class QCloud implements QCloudInstance {
     private options;
     constructor(options: QCloudOptions);
-    request(params: RequestParams, opts?: RequestOptions): Promise<QCloudResponse>;
+    request(payload: QCloudRequestPayload, params?: QCloudRequestParams): Promise<QCloudResponse>;
 }
